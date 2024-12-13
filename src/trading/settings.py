@@ -124,13 +124,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Logger
+# Logger configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '{levelname}:{asctime} - ({module}) {message}',
             'style': '{',
         },
         'simple': {
@@ -146,15 +146,15 @@ LOGGING = {
             'formatter': 'verbose',
         },
         'console': {
-            'level': 'DEBUG',
+            'level': os.getenv("DEBUG", "DEBUG"),
             'class': 'logging.StreamHandler',
-            'formatter': 'simple',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'django': {
+        'root': {
             'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'level': os.getenv("DEBUG", "DEBUG"),
             'propagate': True,
         },
     },
