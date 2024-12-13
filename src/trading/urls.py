@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from trading.views import ExampleView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("example/", ExampleView.as_view(), name="ss")
 ]
