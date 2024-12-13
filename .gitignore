@@ -1,3 +1,5 @@
 .venvx
 .idea
 .env
+*db
+*sqlite*
