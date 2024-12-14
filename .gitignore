@@ -1,2 +1,6 @@
 .venvx
 .idea
+.env
+*db
+*sqlite*
+*.log
