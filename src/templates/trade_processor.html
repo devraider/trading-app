@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Upload File{% endblock %}
+
+{% block content %}
+<nav class="text-sm text-gray-600 mb-4">
+    <a href="/" class="hover:text-gray-800">Home</a> > <span>File Upload</span>
+</nav>
+<div class="space-y-4">
+    <!--    Upload card-->
+    <div class="bg-white shadow-md rounded-lg p-6 max-w-full mx-auto">
+        <h1 class="text-xl font-bold mb-12">Upload a Text File</h1>
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                {{ form.file.label_tag }}
+                {{ form.file }}
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload</button>
+        </form>
+    </div>
+
+    <!--    Rendering card, show whether error or table-->
+    {% if error or table_data %}
+    <div class="bg-white shadow-md rounded-lg p-6 max-w-full mx-auto">
+        {% if error %}
+        <div class="mt-4 text-red-500">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if table_data %}
+        <div class="mt-4">
+            <h2 class="text-lg font-bold mb-2">Results</h2>
+            <table class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                <tr>
+                    <th class="border px-4 py-2">Column1</th>
+                    <th class="border px-4 py-2">Column2</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in table_data %}
+                <tr>
+                    <td class="border px-4 py-2">{{ row.Column1 }}</td>
+                    <td class="border px-4 py-2">{{ row.Column2 }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <form method="post" enctype="multipart/form-data">
+                <button type="submit" name="action" value="confirmed"
+                        class="bg-green-700 text-white px-4 py-2 rounded hover:bg-blue-600">Save
+                </button>
+                <a href="/trade-processor" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-blue-600">Clear</a>
+            </form>
+
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

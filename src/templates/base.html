@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}Trading App{% endblock %}</title>
+</head>
+<body class="bg-gray-100 h-screen flex">
+    <div class="bg-gray-800 text-white w-64 flex-none p-4">
+        <h2 class="text-lg font-bold mb-6">Trading App</h2>
+        <nav>
+            <ul class="space-y-4">
+                <li><a href="/trade-processor" class="hover:text-gray-400">Trade Processor</a></li>
+                <li><a href="/yahoo-finance" class="hover:text-gray-400">Yahoo Finance</a></li>
+                <li><a href="/pnl" class="hover:text-gray-400">P&L</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="flex-1 p-6">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
