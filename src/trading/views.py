@@ -1,10 +1,13 @@
 import logging
 from typing import Any
 
+import pandas as pd
 from django import forms
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+
+from src.trading.services.trading_processor import TradingProcessor
 
 log = logging.getLogger("root")
 
@@ -67,7 +70,7 @@ class TradingProcessorView(View):
         return render(
             request,
             "trade_processor.html",
-            {"form": form, "table_data": None, "error": None},
+            {"form": form, "table_data": pd.DataFrame(), "error": None},
         )
 
     @staticmethod
@@ -85,7 +88,7 @@ class TradingProcessorView(View):
         """
         action = request.POST.get("action")
         form = TextFileUploadForm(request.POST, request.FILES)
-        table_data = None
+        table_data = pd.DataFrame()
         error = None
 
         # file validation
@@ -94,10 +97,7 @@ class TradingProcessorView(View):
                 uploaded_file = form.cleaned_data["file"]
                 log.debug("Files type checked successfully.")
 
-                table_data = [
-                    {"Column1": "Value1", "Column2": "Value2"},
-                    {"Column1": "Value3", "Column2": "Value4"},
-                ]
+                table_data = TradingProcessor.from_excel(uploaded_file).df
 
             except Exception as e:
                 error = "An error occurred while processing the file."

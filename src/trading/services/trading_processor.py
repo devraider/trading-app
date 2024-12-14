@@ -36,12 +36,9 @@ class TradingProcessor:
     def save(self):
         pass
 
-    def to_dict(self) -> dict[str, dict[int : str | int]]:
-        """Output a dict corresponding to internal DataFrame structure.
-        Returns:
-            Return dictionary of columns and values of the dataframe
-        """
-        return self._df.to_dict()
+    @property
+    def df(self):
+        return self._df
 
     @classmethod
     def from_excel(cls, file: BytesIO) -> "TradingProcessor":
