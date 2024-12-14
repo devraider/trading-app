@@ -51,6 +51,7 @@
         </div>
         <div class="mt-4">
             <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                 <button type="submit" name="action" value="confirmed"
                         class="bg-green-700 text-white px-4 py-2 rounded hover:bg-blue-600">Save
                 </button>

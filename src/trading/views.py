@@ -39,8 +39,7 @@ class TextFileUploadForm(forms.Form):
         return uploaded_file
 
 
-# File Upload View
-class FileUploadView(View):
+class TradingProcessorView(View):
     """
     View for processing trading files.
     The context of this view contains `form`, `table_data` and `error`.
@@ -104,12 +103,11 @@ class FileUploadView(View):
             log.info(error)
         # File content validation
 
-        # File content prepare for HTML rendering
-
+        # File content prepare for persisting into database
         if action == "confirmed":
+            error = table_data = None
             log.info("Proceed for file saving on disc and persist data into database.")
 
-        # TODO: Logic to process table
         return render(
             request,
             "trade_processor.html",
