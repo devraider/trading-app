@@ -21,7 +21,7 @@
     </div>
 
     <!--    Rendering card, show whether error or table-->
-    {% if error or table_data %}
+    {% if error or not table_data.empty %}
     <div class="bg-white shadow-md rounded-lg p-6 max-w-full mx-auto">
         {% if error %}
         <div class="mt-4 text-red-500">
@@ -29,35 +29,50 @@
         </div>
         {% endif %}
 
-        {% if table_data %}
+        {% if not table_data.empty %}
         <div class="mt-4">
-            <h2 class="text-lg font-bold mb-2">Results</h2>
-            <table class="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                <tr>
-                    <th class="border px-4 py-2">Column1</th>
-                    <th class="border px-4 py-2">Column2</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for row in table_data %}
-                <tr>
-                    <td class="border px-4 py-2">{{ row.Column1 }}</td>
-                    <td class="border px-4 py-2">{{ row.Column2 }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-4">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <button type="submit" name="action" value="confirmed"
-                        class="bg-green-700 text-white px-4 py-2 rounded hover:bg-blue-600">Save
-                </button>
-                <a href="/trade-processor" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-blue-600">Clear</a>
-            </form>
+            <h2 class="text-lg font-bold mb-2">Results: <u>{{ form.file.data.name }}</u></h2>
+            <div class="mb-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="file_name" value="{{ form.file.data.name }}">
+                    <button type="submit" name="action" value="confirmed"
+                            class="bg-green-700 text-white px-4 py-2 rounded hover:bg-blue-600">Save
+                    </button>
+                    <a href="/trade-processor"
+                       class="bg-red-700 text-white px-4 py-2 rounded hover:bg-blue-600">Clear</a>
+                </form>
+            </div>
+            <div class="overflow-y-auto max-h-80 relative">
 
+                <table class="table-auto overflow-scroll w-full border-collapse border border-gray-300">
+
+                    <thead class="sticky top-0 bg-gray-100">
+                    <tr>
+                        {% for col in table_data.columns %}
+                        <th class="border px-4 py-2 ">{{col}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in table_data.values %}
+                    <tr>
+                        {% for cell in row %}
+                        <td class="border px-4 py-2
+                                {% if cell == 'BUY' %}
+                                text-green-700 font-bold
+                                {% elif cell == 'SELL' %}
+                                text-red-700 font-bold
+                                {% endif %}
+                        ">
+                            {{ cell }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% endif %}
     </div>
