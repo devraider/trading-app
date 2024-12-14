@@ -29,12 +29,15 @@ class TextFileUploadForm(forms.Form):
     file = forms.FileField()
 
     def clean_file(self) -> Any:
-        """Check whether the file is present and if type of the file is `text/plain`.
+        """Check whether the file is present and if type of the file is `xlsx`.
         Returns:
             File after checking.
         """
         uploaded_file = self.cleaned_data["file"]
-        if not uploaded_file.content_type == "text/plain":
+        if (
+            uploaded_file.content_type
+            != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ):
             raise forms.ValidationError("Only text files are allowed.")
         return uploaded_file
 
@@ -90,6 +93,7 @@ class TradingProcessorView(View):
             try:
                 uploaded_file = form.cleaned_data["file"]
                 log.debug("Files type checked successfully.")
+
                 table_data = [
                     {"Column1": "Value1", "Column2": "Value2"},
                     {"Column1": "Value3", "Column2": "Value4"},
@@ -99,7 +103,7 @@ class TradingProcessorView(View):
                 error = "An error occurred while processing the file."
                 log.error(f"Exception for uploaded file: {e}")
         else:
-            error = "Invalid file format. Only text files are allowed."
+            error = "Invalid file format. Only xlsx files are allowed."
             log.info(error)
         # File content validation
 
