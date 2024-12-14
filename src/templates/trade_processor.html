@@ -32,17 +32,6 @@
         {% if not table_data.empty %}
         <div class="mt-4">
             <h2 class="text-lg font-bold mb-2">Results: <u>{{ form.file.data.name }}</u></h2>
-            <div class="mb-4">
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="hidden" name="file_name" value="{{ form.file.data.name }}">
-                    <button type="submit" name="action" value="confirmed"
-                            class="bg-green-700 text-white px-4 py-2 rounded hover:bg-blue-600">Save
-                    </button>
-                    <a href="/trade-processor"
-                       class="bg-red-700 text-white px-4 py-2 rounded hover:bg-blue-600">Clear</a>
-                </form>
-            </div>
             <div class="overflow-y-auto max-h-80 relative">
 
                 <table class="table-auto overflow-scroll w-full border-collapse border border-gray-300">
