@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
-from src.trading.services.trading_processor import TradingProcessor
+from .services.trading_processor import TradingProcessor
 
 log = logging.getLogger("root")
 
