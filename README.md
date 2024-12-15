@@ -97,6 +97,8 @@ trading_app/
 │   │   ├── migrations/
 │   │   │   └── (all migration after running makemigration command)
 │   │   ├── repository/
+│   │   │   ├── base_repo.py
+│   │   │   ├── positions.py
 │   │   │   └── tranzactions.py
 │   │   └── tests/
 │   │   ├── services/
