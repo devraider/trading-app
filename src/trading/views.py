@@ -1,20 +1,14 @@
 import logging
-import time
-from typing import Optional
 
 import pandas as pd
-from django import forms
-from django.core.files.storage import FileSystemStorage
-from django.core.files.uploadedfile import UploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.utils.text import get_valid_filename
 from django.views import View
 
 from .repository.positions import DailyNetPositionRepo
 from .repository.tranzactions import TransactionRepo
 from .services.trading_processor import TradingProcessor
-from .settings import MEDIA_ROOT
+from .tools import TextFileUploadForm, save_to_disk
 
 log = logging.getLogger("root")
 
@@ -28,29 +22,6 @@ def welcome(request) -> HttpResponse:
         Http response containing formatted html
     """
     return render(request, "welcome.html")
-
-
-class TextFileUploadForm(forms.Form):
-    """
-    Custom text and file upload.
-    Help us to enforce file checking.
-    """
-
-    file = forms.FileField()
-
-    def clean_file(self) -> Optional[UploadedFile]:
-        """Check whether the file is present and if type of the file is `xlsx`.
-        Returns:
-            File after checking.
-        """
-        uploaded_file = self.cleaned_data["file"]
-        if (
-            uploaded_file.content_type
-            != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ):
-            # raise forms.ValidationError("Only text files are allowed.")
-            return None
-        return uploaded_file
 
 
 class TradingProcessorView(View):
@@ -112,13 +83,10 @@ class TradingProcessorView(View):
             context["error"] = "Invalid file type. Please use an `xlsx` file."
             log.info(context["error"])
             return render(request, "trade_processor.html", context=context)
-
         uploaded_file = form.cleaned_data["file"]
 
         # persist file on disk
-        fs = FileSystemStorage(location=MEDIA_ROOT)
-        file_name = f"{int(time.time())}-{get_valid_filename(uploaded_file.name)}"
-        fs.save(file_name, uploaded_file)
+        save_to_disk(uploaded_file)
 
         # persist transaction in database
         transactions_repo = TransactionRepo()
