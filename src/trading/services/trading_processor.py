@@ -2,6 +2,8 @@ from io import BytesIO
 
 import pandas as pd
 
+from src.trading.repository.tranzactions import TransactionRepo
+
 
 class TradingProcessor:
     """ """
@@ -33,8 +35,11 @@ class TradingProcessor:
         )
         return net_positions
 
-    def save(self):
-        pass
+    def save(self, repo: TransactionRepo):
+        if self._df is None:
+            raise ValueError("No transactions DataFrame to save.")
+        transactions = self._df.to_dict(orient="records")
+        repo().save_transactions(transactions)
 
     @property
     def df(self):

@@ -1,13 +1,19 @@
 import logging
-from typing import Any
+import time
+from typing import Optional
 
 import pandas as pd
 from django import forms
+from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import UploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils.text import get_valid_filename
 from django.views import View
 
+from .repository.tranzactions import PsqlTransactionRepo
 from .services.trading_processor import TradingProcessor
+from .settings import MEDIA_ROOT
 
 log = logging.getLogger("root")
 
@@ -31,7 +37,7 @@ class TextFileUploadForm(forms.Form):
 
     file = forms.FileField()
 
-    def clean_file(self) -> Any:
+    def clean_file(self) -> Optional[UploadedFile]:
         """Check whether the file is present and if type of the file is `xlsx`.
         Returns:
             File after checking.
@@ -41,7 +47,8 @@ class TextFileUploadForm(forms.Form):
             uploaded_file.content_type
             != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            raise forms.ValidationError("Only text files are allowed.")
+            # raise forms.ValidationError("Only text files are allowed.")
+            return None
         return uploaded_file
 
 
@@ -86,34 +93,28 @@ class TradingProcessorView(View):
         Returns:
             HTTP response containing HTML file.
         """
-        action = request.POST.get("action")
         form = TextFileUploadForm(request.POST, request.FILES)
-        table_data = pd.DataFrame()
-        error = None
+        context = {"form": form, "table_data": pd.DataFrame(), "error": None}
 
         # file validation
-        if form.is_valid():
-            try:
-                uploaded_file = form.cleaned_data["file"]
-                log.debug("Files type checked successfully.")
+        if not form.is_valid() or form.cleaned_data["file"] is None:
+            context["error"] = "Invalid file type. Please use an `xlsx` file."
+            log.info(context["error"])
+            return render(request, "trade_processor.html", context=context)
 
-                table_data = TradingProcessor.from_excel(uploaded_file).df
+        uploaded_file = form.cleaned_data["file"]
 
-            except Exception as e:
-                error = "An error occurred while processing the file."
-                log.error(f"Exception for uploaded file: {e}")
-        else:
-            error = "Invalid file format. Only xlsx files are allowed."
-            log.info(error)
-        # File content validation
+        # persist file on disk
+        fs = FileSystemStorage(location=MEDIA_ROOT)
+        file_name = f"{int(time.time())}-{get_valid_filename(uploaded_file.name)}"
+        fs.save(file_name, uploaded_file)
 
-        # File content prepare for persisting into database
-        if action == "confirmed":
-            error = table_data = None
-            log.info("Proceed for file saving on disc and persist data into database.")
+        # persist transaction in database
+        tp = TradingProcessor.from_excel(uploaded_file)
 
-        return render(
-            request,
-            "trade_processor.html",
-            {"form": form, "table_data": table_data, "error": error},
-        )
+        tp.save(PsqlTransactionRepo)
+
+        # TODO: Implement Pydantic or other validation method to check data consistency
+        context["table_data"] = tp.df
+
+        return render(request, "trade_processor.html", context=context)
