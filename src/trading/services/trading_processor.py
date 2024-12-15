@@ -39,7 +39,7 @@ class TradingProcessor:
         if self._df is None:
             raise ValueError("No transactions DataFrame to save.")
         transactions = self._df.to_dict(orient="records")
-        repo().save_transactions(transactions)
+        repo.save_transactions(transactions)
 
     @property
     def df(self):
