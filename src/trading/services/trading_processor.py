@@ -35,10 +35,10 @@ class TradingProcessor:
         return net_positions
 
     def save(self, repo: Repository) -> None:
-        """
-
+        """Persist transactions into Database using give repository.
+        To perform that we need first to export our transactions DataFrame into a dictionary.
         Args:
-            repo:
+            repo: Repository instance
 
         Returns:
             None
@@ -49,9 +49,12 @@ class TradingProcessor:
         repo.save_transactions(transactions)
 
     def save_daily_net(self, repo: Repository) -> None:
-        """
+        """Persist calculated Daily Net Positions into database using given repository.
+        To perform that we need first to export our transactions DataFrame into a dictionary.
+
         Args:
-            repo:
+            repo: Repository instance
+
         Returns:
             None
         """
