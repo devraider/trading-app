@@ -11,7 +11,8 @@ from django.shortcuts import render
 from django.utils.text import get_valid_filename
 from django.views import View
 
-from .repository.tranzactions import PsqlTransactionRepo
+from .repository.positions import DailyNetPositionRepo
+from .repository.tranzactions import TransactionRepo
 from .services.trading_processor import TradingProcessor
 from .settings import MEDIA_ROOT
 
@@ -120,10 +121,12 @@ class TradingProcessorView(View):
         fs.save(file_name, uploaded_file)
 
         # persist transaction in database
-        repo = PsqlTransactionRepo()
+        transactions_repo = TransactionRepo()
+        positions_repo = DailyNetPositionRepo()
         tp = TradingProcessor.from_excel(uploaded_file)
 
-        tp.save(repo)
+        tp.save(transactions_repo)
+        tp.save_daily_net(positions_repo)
 
         # TODO: Implement Pydantic or other validation method to check data consistency
         context["transactions"] = tp.df
