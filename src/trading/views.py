@@ -1,14 +1,19 @@
 import logging
-from io import BytesIO
+import time
 from typing import Optional
 
 import pandas as pd
 from django import forms
+from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import UploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils.text import get_valid_filename
 from django.views import View
 
+from .repository.tranzactions import PsqlTransactionRepo
 from .services.trading_processor import TradingProcessor
+from .settings import MEDIA_ROOT
 
 log = logging.getLogger("root")
 
@@ -32,7 +37,7 @@ class TextFileUploadForm(forms.Form):
 
     file = forms.FileField()
 
-    def clean_file(self) -> Optional[BytesIO]:
+    def clean_file(self) -> Optional[UploadedFile]:
         """Check whether the file is present and if type of the file is `xlsx`.
         Returns:
             File after checking.
@@ -97,8 +102,19 @@ class TradingProcessorView(View):
             log.info(context["error"])
             return render(request, "trade_processor.html", context=context)
 
+        uploaded_file = form.cleaned_data["file"]
+
+        # persist file on disk
+        fs = FileSystemStorage(location=MEDIA_ROOT)
+        file_name = f"{int(time.time())}-{get_valid_filename(uploaded_file.name)}"
+        fs.save(file_name, uploaded_file)
+
+        # persist transaction in database
+        tp = TradingProcessor.from_excel(uploaded_file)
+
+        tp.save(PsqlTransactionRepo)
+
         # TODO: Implement Pydantic or other validation method to check data consistency
-        tp = TradingProcessor.from_excel(form.cleaned_data["file"])
         context["table_data"] = tp.df
 
         return render(request, "trade_processor.html", context=context)
