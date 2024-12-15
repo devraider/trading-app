@@ -5,13 +5,12 @@ from trading.repository.base_repo import DF_VALUE, Repository
 
 class DailyNetPositionRepo(Repository):
     def save_transactions(self, positions: list[dict[str, DF_VALUE]]) -> None:
-        """
-
+        """Save multiple positions using bulk_create for efficiency.
         Args:
-            positions:
+            positions: A list of dictionaries representing transaction data.
 
         Returns:
-
+            None
         """
         transaction_objects = [
             DailyNetPosition(
