@@ -7,7 +7,7 @@
     <title>{% block title %}Trading App{% endblock %}</title>
 </head>
 <body class="bg-gray-100 h-screen flex">
-<div class="bg-gray-800 text-white w-64 flex-none p-4">
+<div class="bg-gray-800 text-white w-64 h-full fixed top-0 left-0 p-4">
     <h2 class="text-lg font-bold mb-6">Trading App</h2>
     <nav>
         <ul class="space-y-4">
@@ -18,7 +18,7 @@
     </nav>
 </div>
 
-<div class="flex-1 p-6">
+<div class="ml-64 flex-1 p-6">
     {% block content %}
     {% endblock %}
 </div>

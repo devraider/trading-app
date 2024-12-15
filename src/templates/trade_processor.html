@@ -21,7 +21,7 @@
     </div>
 
     <!--    Rendering card, show whether error or table-->
-    {% if error or not table_data.empty %}
+    {% if error or not transactions.empty %}
     <div class="bg-white shadow-md rounded-lg p-6 max-w-full mx-auto">
         {% if error %}
         <div class="mt-4 text-red-500">
@@ -29,28 +29,66 @@
         </div>
         {% endif %}
 
-        {% if not table_data.empty %}
+        {% if not transactions.empty %}
         <div class="mt-4">
             <h2 class="text-lg font-bold mb-2">Results: <u>{{ form.file.data.name }}</u></h2>
+            <h3 class="text-lg mb-2">Overview Daily Net Positions</h3>
+
             <div class="overflow-y-auto max-h-80 relative">
 
                 <table class="table-auto overflow-scroll w-full border-collapse border border-gray-300">
 
                     <thead class="sticky top-0 bg-gray-100">
                     <tr>
-                        {% for col in table_data.columns %}
+                        {% for col in daily_net.columns %}
                         <th class="border px-4 py-2 ">{{col}}</th>
                         {% endfor %}
                     </tr>
                     </thead>
                     <tbody>
-                    {% for row in table_data.values %}
+                    {% for row in daily_net.values %}
+                    <tr>
+                        {% for cell in row %}
+                        <td class="border px-4 py-2
+                            {% if cell|default:'' and cell|stringformat:'s'|add:0 > 0 %}
+                                text-green-700 font-bold
+                            {% elif cell|default:'' and cell|stringformat:'s'|add:0 < 0 %}
+                                text-red-700 font-bold
+                            {% endif %}">
+                            {{ cell }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-4">
+            <h3 class="text-lg mb-2">Transactions</h3>
+            <div class="overflow-y-auto max-h-80 relative">
+
+                <table class="table-auto overflow-scroll w-full border-collapse border border-gray-300">
+
+                    <thead class="sticky top-0 bg-gray-100">
+                    <tr>
+                        {% for col in transactions.columns %}
+                        <th class="border px-4 py-2 ">{{col}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in transactions.values %}
                     <tr>
                         {% for cell in row %}
                         <td class="border px-4 py-2
                                 {% if cell == 'BUY' %}
                                 text-green-700 font-bold
                                 {% elif cell == 'SELL' %}
+                                text-red-700 font-bold
+                                {% elif cell|default:'' and cell|stringformat:'s'|add:0 > 0 %}
+                                text-green-700 font-bold
+                                {% elif cell|default:'' and cell|stringformat:'s'|add:0 < 0 %}
                                 text-red-700 font-bold
                                 {% endif %}
                         ">

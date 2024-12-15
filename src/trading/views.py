@@ -11,7 +11,8 @@ from django.shortcuts import render
 from django.utils.text import get_valid_filename
 from django.views import View
 
-from .repository.tranzactions import PsqlTransactionRepo
+from .repository.positions import DailyNetPositionRepo
+from .repository.tranzactions import TransactionRepo
 from .services.trading_processor import TradingProcessor
 from .settings import MEDIA_ROOT
 
@@ -77,7 +78,12 @@ class TradingProcessorView(View):
         return render(
             request,
             "trade_processor.html",
-            {"form": form, "table_data": pd.DataFrame(), "error": None},
+            context={
+                "form": form,
+                "transactions": pd.DataFrame(),
+                "daily_net": pd.DataFrame(),
+                "error": None,
+            },
         )
 
     @staticmethod
@@ -94,7 +100,12 @@ class TradingProcessorView(View):
             HTTP response containing HTML file.
         """
         form = TextFileUploadForm(request.POST, request.FILES)
-        context = {"form": form, "table_data": pd.DataFrame(), "error": None}
+        context = {
+            "form": form,
+            "transactions": pd.DataFrame(),
+            "daily_net": pd.DataFrame(),
+            "error": None,
+        }
 
         # file validation
         if not form.is_valid() or form.cleaned_data["file"] is None:
@@ -110,11 +121,15 @@ class TradingProcessorView(View):
         fs.save(file_name, uploaded_file)
 
         # persist transaction in database
+        transactions_repo = TransactionRepo()
+        positions_repo = DailyNetPositionRepo()
         tp = TradingProcessor.from_excel(uploaded_file)
 
-        tp.save(PsqlTransactionRepo)
+        tp.save(transactions_repo)
+        tp.save_daily_net(positions_repo)
 
         # TODO: Implement Pydantic or other validation method to check data consistency
-        context["table_data"] = tp.df
+        context["transactions"] = tp.df
+        context["daily_net"] = tp.calc_daily_net()
 
         return render(request, "trade_processor.html", context=context)

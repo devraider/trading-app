@@ -1,8 +1,7 @@
 from io import BytesIO
 
 import pandas as pd
-
-from src.trading.repository.tranzactions import TransactionRepo
+from trading.repository.base_repo import Repository
 
 
 class TradingProcessor:
@@ -35,11 +34,32 @@ class TradingProcessor:
         )
         return net_positions
 
-    def save(self, repo: TransactionRepo):
+    def save(self, repo: Repository) -> None:
+        """Persist transactions into Database using give repository.
+        To perform that we need first to export our transactions DataFrame into a dictionary.
+        Args:
+            repo: Repository instance
+
+        Returns:
+            None
+        """
         if self._df is None:
             raise ValueError("No transactions DataFrame to save.")
         transactions = self._df.to_dict(orient="records")
-        repo().save_transactions(transactions)
+        repo.save_transactions(transactions)
+
+    def save_daily_net(self, repo: Repository) -> None:
+        """Persist calculated Daily Net Positions into database using given repository.
+        To perform that we need first to export our transactions DataFrame into a dictionary.
+
+        Args:
+            repo: Repository instance
+
+        Returns:
+            None
+        """
+        positions = self.calc_daily_net().to_dict(orient="records")
+        repo.save_transactions(positions)
 
     @property
     def df(self):
