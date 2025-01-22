@@ -4,6 +4,7 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
+    restart: always
     volumes:
       - ../src:/app
     ports:
@@ -26,3 +27,8 @@ services:
 
 volumes:
   postgres_data:
+
+
+networks:
+  trading_app:
+    driver: bridge
