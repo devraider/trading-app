@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import UploadedFile
 from django.utils.text import get_valid_filename
 
-from src.trading.settings import MEDIA_ROOT
+from .settings import MEDIA_ROOT
 
 
 def save_to_disk(uploaded_file: UploadedFile) -> None:
