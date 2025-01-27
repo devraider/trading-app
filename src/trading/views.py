@@ -101,3 +101,21 @@ class TradingProcessorView(View):
         context["daily_net"] = tp.calc_daily_net()
 
         return render(request, "trade_processor.html", context=context)
+
+
+class PnLProcessorView(View):
+    @staticmethod
+    def get(request) -> HttpResponse:
+        """Get method of trading file processor
+        A method to render the HTML template for Trading processor.
+        Args:
+            request: Request context
+
+        Returns:
+            HTTP response containing HTML file.
+        """
+        form = TextFileUploadForm()
+        return render(
+            request,
+            "pnl.html",
+        )

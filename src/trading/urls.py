@@ -18,10 +18,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import TradingProcessorView, welcome
+from .views import TradingProcessorView, welcome, PnLProcessorView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("trade-processor/", TradingProcessorView.as_view(), name="trade_processor"),
+    path("pnl/", PnLProcessorView.as_view(), name="pnl_processor"),
     path("", welcome, name="welcome"),
 ]
