@@ -31,6 +31,30 @@ This project was developed as a take-home assignment for the **NCH Invest** inte
     - Calculate daily net positions based on imported trades.
     - Store trades and calculated positions in the database.
 
+4. **P&L Processing**:
+    - Import Excel-based trades files.
+    - Validate trade data for accuracy and consistency.
+    - Differentiate between realized and unrealized P&L.
+    - Compute daily Profit & Loss for each position.
+
+## Demo & Walkthrough
+
+### Trade Processing
+1.
+![1](/src/static/img/tp1.png)
+2.
+![2](/src/static/img/tp2.png)
+3.
+![3](/src/static/img/tp3.png)
+
+### P&L Processing
+1.
+![1](/src/static/img/pnl1.png)
+2. 
+![2](/src/static/img/pnl2.png)
+3. 
+![3](/src/static/img/pnl3.png)
+
 ---
 
 ## Installation Guide
@@ -79,6 +103,9 @@ trading_app/
 │   ├── Dockerfile
 │   └── docker-compose.yml
 ├── samples/
+│   ├── pnl
+│   │   ├── trades_example.xlsx (file with formulas to guide development process)
+│   │   └── pnl.xlsx (sample file for testing)
 │   └── trading-processor
 │       └── trading-processor
 │           ├── trades_250_entries.xlsx
@@ -90,6 +117,7 @@ trading_app/
 │   │       └── (uplded .xlsx file by the user)
 │   ├── templates/
 │   │   ├── base.html
+│   │   ├── pnl.html
 │   │   ├── trade_processor.html
 │   │   └── welcome.html
 │   ├── trading/
@@ -104,7 +132,7 @@ trading_app/
 │   │   ├── services/
 │   │   │   ├── yahoo_finance.py
 │   │   │   ├── trade_processor.py
-│   │   │   └── pnl_calculator.py
+│   │   │   └── pnl_processor.py
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── tools.py
