@@ -7,7 +7,7 @@ from django.views import View
 
 from .repository.positions import DailyNetPositionRepo
 from .repository.tranzactions import TransactionRepo
-from .services.pnl_calculator import PnLProcessor
+from .services.pnl_processor import PnLProcessor
 from .services.trading_processor import TradingProcessor
 from .tools import TextFileUploadForm, save_to_disk
 
