@@ -125,10 +125,15 @@ class PnLProcessorView(View):
         Returns:
             HTTP response containing HTML file.
         """
-        return render(
-            request,
-            "pnl.html",
-        )
+        form = TextFileUploadForm()
+
+        context = {
+            "form": form,
+            "pnl": pd.DataFrame(),
+            "current_positions": pd.DataFrame(),
+            "error": None,
+        }
+        return render(request, "pnl.html", context=context)
 
     @staticmethod
     def post(request):
@@ -147,7 +152,7 @@ class PnLProcessorView(View):
 
         pnl_processor = PnLProcessor.from_excel(uploaded_file)
         pnl_processor.run()
-        context["pnl"] = pnl_processor.get_current_positions()
+        context["pnl"] = pnl_processor.data
         context["current_positions"] = pnl_processor.get_current_positions()
 
         return render(request, "pnl.html", context=context)
