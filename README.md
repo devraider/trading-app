@@ -79,6 +79,9 @@ trading_app/
 │   ├── Dockerfile
 │   └── docker-compose.yml
 ├── samples/
+│   ├── pnl
+│   │   ├── trades_example.xlsx (file with formulas to guide development process)
+│   │   └── pnl.xlsx (sample file for testing)
 │   └── trading-processor
 │       └── trading-processor
 │           ├── trades_250_entries.xlsx
@@ -90,6 +93,7 @@ trading_app/
 │   │       └── (uplded .xlsx file by the user)
 │   ├── templates/
 │   │   ├── base.html
+│   │   ├── pnl.html
 │   │   ├── trade_processor.html
 │   │   └── welcome.html
 │   ├── trading/
@@ -104,7 +108,7 @@ trading_app/
 │   │   ├── services/
 │   │   │   ├── yahoo_finance.py
 │   │   │   ├── trade_processor.py
-│   │   │   └── pnl_calculator.py
+│   │   │   └── pnl_processor.py
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── tools.py
