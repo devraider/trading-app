@@ -31,6 +31,30 @@ This project was developed as a take-home assignment for the **NCH Invest** inte
     - Calculate daily net positions based on imported trades.
     - Store trades and calculated positions in the database.
 
+4. **P&L Processing**:
+    - Import Excel-based trades files.
+    - Validate trade data for accuracy and consistency.
+    - Differentiate between realized and unrealized P&L.
+    - Compute daily Profit & Loss for each position.
+
+## Demo & Walkthrough
+
+### Trade Processing
+1.
+![1](/src/static/img/tp1.png)
+2.
+![2](/src/static/img/tp2.png)
+3.
+![3](/src/static/img/tp3.png)
+
+### P&L Processing
+1.
+![1](/src/static/img/pnl1.png)
+2. 
+![2](/src/static/img/pnl2.png)
+3. 
+![3](/src/static/img/pnl3.png)
+
 ---
 
 ## Installation Guide
